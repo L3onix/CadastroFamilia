@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/home/leonix/NetBeansProjects/CadastroFamilia/web/index.xhtml</file>
+            <file>file:/home/leonix/NetBeansProjects/CadastroFamilia/src/java/br/com/empresa/entidade/PessoaFamilia.java</file>
+            <file>file:/home/leonix/NetBeansProjects/CadastroFamilia/src/java/br/com/empresa/bean/PessoaFamiliaMB.java</file>
+            <file>file:/home/leonix/NetBeansProjects/CadastroFamilia/src/java/br/com/empresa/dao/BasicoDAO.java</file>
+            <file>file:/home/leonix/NetBeansProjects/CadastroFamilia/src/java/br/com/empresa/util/HibernateUtil.java</file>
+            <file>file:/home/leonix/NetBeansProjects/CadastroFamilia/src/java/br/com/empresa/converter/EnderecoConverter.java</file>
+            <file>file:/home/leonix/NetBeansProjects/CadastroFamilia/src/java/hibernate.cfg.xml</file>
+            <file>file:/home/leonix/NetBeansProjects/CadastroFamilia/src/java/br/com/empresa/dao/PessoaQualidadeDAO.java</file>
+            <file>file:/home/leonix/NetBeansProjects/CadastroFamilia/src/java/br/com/empresa/converter/PessoaConverter.java</file>
+            <file>file:/home/leonix/NetBeansProjects/CadastroFamilia/src/java/br/com/empresa/bean/PessoaMB.java</file>
+            <file>file:/home/leonix/NetBeansProjects/CadastroFamilia/src/java/br/com/empresa/dao/PessoaDAO.java</file>
+        </group>
+    </open-files>
+</project-private>

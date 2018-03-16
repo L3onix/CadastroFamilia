@@ -1,0 +1,289 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Cadastro Pessoas</title>
+    </h:head>
+    <h:body>
+        <!--
+        Painel responsável pelos dados da pessoa
+        -->
+        <p:panel header="Pessoa">
+            <!--
+            Formulário usado para cadastro e alteração de dados de pessoas
+            -->
+            <h:form id="formPessoa">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Nome:" for="nome"/>
+                    <p:inputText value="#{pessoaMB.pessoa.nome}" maxlength="100" id="nome"
+                                 required="true" requiredMessage="Campo NOME é obrigatório."/>
+
+                    <p:outputLabel value="Sobrenome:" for="sobrenome"/>
+                    <p:inputText value="#{pessoaMB.pessoa.sobrenome}" maxlength="200" id="sobrenome"
+                                 required="true" requiredMessage="Campo NOME é obrigatório."/>
+
+                    <p:commandButton value="Cancelar" action="#{pessoaMB.limpar()}" update="@form"/>
+                    <p:commandButton value="Salvar" action="#{pessoaMB.salvar()}" update="@form :formPessoaLista"/>
+                </p:panelGrid>
+            </h:form>
+
+            <!--
+            Formulário para apresentação de lista de pessoas
+            Cada pessoa apresenta os botões LER, ALTERAR e DELETAR
+            LER -> Redireciona o usuário para uma página com mais informaçẽos da pessoa, como parentesco, qualidades e endereços
+            ALTERAR -> Recarrega as informações da pessoa no formulário de cadastro (formCadastro) para serem alteradas
+            DELETAR -> Deleta pessoa da lista de pessoas
+            -->
+            <h:form id="formPessoaLista">
+                <p:dataTable var="itemPessoa" value="#{pessoaMB.lista}" emptyMessage="Sem geristros">
+                    <p:column headerText="ID">
+                        #{itemPessoa.id}
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{itemPessoa.nome}">
+                        #{itemPessoa.nome}
+                    </p:column>
+                    <p:column headerText="Sobrenome">
+                        #{itemPessoa.sobrenome}
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <p:commandButton value="Ver" action="#{pessoaMB.carregarPessoa(itemPessoa)}" process="@this" update=":formPessoaSelecionado"/>
+                        <p:commandButton value="Alterar" action="#{pessoaMB.carregarPessoa(itemPessoa)}" process="@this" update=":formPessoa"/>
+                        <p:commandButton value="Remover" action="#{pessoaMB.deletar(itemPessoa)}" process="@this" update="@form"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:panel>
+
+        <!--
+        Painel responsável pela apresentação da pessoa selecionada 
+        -->
+        <p:panel header="Pessoa Selecionada">
+            <!--
+            Formulário para apresentação de pessoa selecionada
+            -->
+            <h:form id="formPessoaSelecionado">
+                <p:dataTable var="itemPessoaSelecionado" value="#{pessoaMB.pessoa}" emptyMessage="Sem geristros">
+                    <p:column headerText="Nome">
+                        #{itemPessoaSelecionado.nome}
+                    </p:column>
+                    <p:column headerText="Sobrenome">
+                        #{itemPessoaSelecionado.sobrenome}
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:panel>
+
+        <!--
+        Painel responsável pelos dados de endereco
+        -->
+        <!--
+        <script type="text/javascript">
+            function setHiddenValue(new_value){
+                document.getElementById('formEndereco:idPessoaHidden').value = new_value;
+            }
+        </script>
+        -->
+        <p:panel header="Endereços">
+            <!--
+            Formulário usado para cadastro e alteração de dados de endereços
+            -->
+            <h:form id="formEndereco">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="País:" for="pais"/>
+                    <p:inputText value="#{enderecoMB.endereco.pais}" maxlength="100" id="pais"
+                                 required="false"/>
+
+                    <p:outputLabel value="Estado:" for="estado"/>
+                    <p:inputText value="#{enderecoMB.endereco.estado}" maxlength="100" id="estado"
+                                 required="false"/>
+
+                    <p:outputLabel value="Cidade:" for="cidade"/>
+                    <p:inputText value="#{enderecoMB.endereco.cidade}" maxlength="150" id="cidade"
+                                 required="false"/>
+
+                    <p:outputLabel value="Descrição:" for="descricao"/>
+                    <p:inputText value="#{enderecoMB.endereco.descricao}" maxlength="250" id="descricao"
+                                 required="true" requiredMessage="Campo DESCRIÇÃO é obrigatório."/>
+
+                    <p:outputLabel value="PessoaID:" for="idpessoaEndereco"/>
+                    <p:inputText value="#{enderecoMB.endereco.idpessoa}" id="idpessoaEndereco"
+                                 required="true" requiredMessage="Campo PessoaID é obrigatório."
+                                 converter="pessoaConverter"/>
+
+                    <p:commandButton value="Cancelar" action="#{enderecoMB.limpar()}" update="@form"/>
+                    <p:commandButton value="Salvar" action="#{enderecoMB.salvar()}" update="@form :formEnderecoLista"/>
+                </p:panelGrid>
+            </h:form>
+            <!--
+            Formulário para apresentação de endereços
+            -->
+            <h:form id="formEnderecoLista">
+                <p:dataTable var="item" value="#{enderecoMB.lista}" emptyMessage="Sem geristros">
+                    <p:column headerText="ID">
+                        #{item.id}
+                    </p:column>
+                    <p:column headerText="País">
+                        #{item.pais}
+                    </p:column>
+                    <p:column headerText="Estado">
+                        #{item.estado}
+                    </p:column>
+                    <p:column headerText="Cidade">
+                        #{item.cidade}
+                    </p:column>
+                    <p:column headerText="Descrição">
+                        #{item.descricao}
+                    </p:column>
+                    <p:column headerText="PessoaID">
+                        #{item.idpessoa.nome}
+                    </p:column>
+
+                    <p:column headerText="Ações">
+                        <p:commandButton value="Alterar" action="#{enderecoMB.carregarEndereco(item)}" process="@this" update=":formEndereco"/>
+                        <p:commandButton value="Remover" action="#{enderecoMB.deletar(item)}" process="@this" update="@form"/>
+                    </p:column>
+                </p:dataTable>
+                <h:messages />
+            </h:form>
+        </p:panel>
+
+        <!--
+        Painel responsável pelos dados de parentesco
+        -->
+        <p:panel header="Parentescos">
+            <!--
+            Formulário usado para cadastro e alteração de dados de endereços
+            -->
+            <h:form id="formParentesco">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Grau Parentesco:" for="grauparentesco"/>
+                    <p:inputText value="#{pessoaFamiliaMB.pessoaFamilia.grauparentesco}" id="grauparentesco"
+                                 required="true"/>
+
+                    <p:outputLabel value="Tipo Parentesco:" for="tipoparentesco"/>
+                    <p:inputText value="#{pessoaFamiliaMB.pessoaFamilia.tipoparentesco}" id="tipoparentesco"
+                                 required="true"/>
+
+                    <p:outputLabel value="Pessoa ID:" for="idpessoaParentesco"/>
+                    <p:inputText value="#{pessoaFamiliaMB.pessoaFamilia.idpessoa}" id="idpessoaParentesco"
+                                 required="true" converter="pessoaConverter"/>
+
+                    <p:outputLabel value="Parente ID:" for="idparente"/>
+                    <p:inputText value="#{pessoaFamiliaMB.pessoaFamilia.idparente}" id="idparente"
+                                 required="true" converter="pessoaConverter"/>
+
+                    <p:commandButton value="Cancelar" action="#{pessoaFamiliaMB.limpar()}" update="@form"/>
+                    <p:commandButton value="Salvar" action="#{pessoaFamiliaMB.salvar()}" update="@form :formParentescoLista"/>
+                </p:panelGrid>
+            </h:form>
+            <!--
+            Formulário para apresentação de parentescos
+            -->
+            <h:form id="formParentescoLista">
+                <p:dataTable var="item" value="#{pessoaFamiliaMB.lista}" emptyMessage="Sem geristros">
+                    <p:column headerText="ID">
+                        #{item.id}
+                    </p:column>
+                    <p:column headerText="Grau Parentesco">
+                        #{item.grauparentesco}
+                    </p:column>
+                    <p:column headerText="Tipo Parentesco">
+                        #{item.tipoparentesco}
+                    </p:column>
+                    <p:column headerText="Pessoa ID">
+                        #{item.idpessoa.nome}
+                    </p:column>
+                    <p:column headerText="Parente ID">
+                        #{item.idparente.nome}
+                    </p:column>
+
+                    <p:column headerText="Ações">
+                        <p:commandButton value="Alterar" action="#{pessoaFamiliaMB.carregarPessoaFamilia(item)}" process="@this" update=":formParentesco"/>
+                        <p:commandButton value="Remover" action="#{pessoaFamiliaMB.deletar(item)}" process="@this" update="@form"/>
+                    </p:column>
+                </p:dataTable>
+                <h:messages />
+            </h:form>
+        </p:panel>
+
+        <!--
+        Painel responsável pelos dados de qualidades
+        -->
+        <p:panel header="Qualidades">
+            <h:form id="formQualidade">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Descrição:" for="descricaoQualidade"/>
+                    <p:inputText value="#{qualidadeMB.qualidade.descricao}" id="descricaoQualidade"
+                                 required="true"/>
+
+                    <p:commandButton value="Cancelar" action="#{qualidadeMB.limpar()}" update="@form"/>
+                    <p:commandButton value="Salvar" action="#{qualidadeMB.salvar()}" update="@form :formQualidadeLista"/>
+                </p:panelGrid>
+            </h:form>
+            <!--
+            Formulário para apresentação de qualidades
+            -->
+            <h:form id="formQualidadeLista">
+                <p:dataTable var="item" value="#{qualidadeMB.lista}" emptyMessage="Sem geristros">
+                    <p:column headerText="ID">
+                        #{item.id}
+                    </p:column>
+                    <p:column headerText="Descrição">
+                        #{item.descricao}
+                    </p:column>
+
+                    <p:column headerText="Ações">
+                        <p:commandButton value="Alterar" action="#{qualidadeMB.carregar(item)}" process="@this" update=":formQualidade"/>
+                        <p:commandButton value="Remover" action="#{qualidadeMB.deletar(item)}" process="@this" update="@form"/>
+                    </p:column>
+                </p:dataTable>
+                <h:messages />
+            </h:form>
+        </p:panel>
+
+        <!--
+        Painel responsável pelos dados de qualidades de pessoas
+        -->
+        <p:panel header="Qualidades de Pessoas">
+            <h:form id="formPessoaQualidade">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Pessoa ID(int):" for="idPessoaQualidade"/>
+                    <p:inputText value="#{pessoaQualidadeMB.pessoaQualidade.idpessoa}" id="idPessoaQualidade"
+                                 required="true" converter="pessoaConverter"/>
+
+                    <p:outputLabel value="Qualidade ID(int):" for="idQualidadePessoa"/>
+                    <p:inputText value="#{pessoaQualidadeMB.pessoaQualidade.idqualidade}" id="idQualidadePessoa"
+                                 required="true" converter="qualidadeConverter"/>
+
+                    <p:commandButton value="Cancelar" action="#{pessoaQualiadadeMB.limpar()}" update="@form"/>
+                    <p:commandButton value="Salvar" action="#{pessoaQualidadeMB.salvar()}" update="@form :formPessoaQualidadeLista"/>
+                </p:panelGrid>
+            </h:form>
+            <!--
+            Formulário para apresentação de qualidades de pessoas
+            -->
+            <h:form id="formPessoaQualidadeLista">
+                <p:dataTable var="item" value="#{pessoaQualidadeMB.lista}" emptyMessage="Sem geristros">
+                    <p:column headerText="ID">
+                        #{item.id}
+                    </p:column>
+                    <p:column headerText="Pessoa">
+                        #{item.idpessoa.nome}
+                    </p:column>
+                    <p:column headerText="Qualidade">
+                        #{item.idqualidade.descricao}
+                    </p:column>
+
+                    <p:column headerText="Ações">
+                        <p:commandButton value="Alterar" action="#{pessoaQualidadeMB.carregar(item)}" process="@this" update=":formPessoaQualidade"/>
+                        <p:commandButton value="Remover" action="#{pessoaQualidadeMB.deletar(item)}" process="@this" update="@form"/>
+                    </p:column>
+                </p:dataTable>
+                <h:messages />
+            </h:form>
+        </p:panel>
+    </h:body>
+</html>
+
